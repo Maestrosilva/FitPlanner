@@ -6,66 +6,84 @@
     <title>User Register Form</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/common.css}">
-    <link rel="stylesheet" th:href="@{/css/buttons.css}">
+    <link rel="stylesheet" th:href="@{/css/button.css}">
     <link rel="stylesheet" th:href="@{/css/dropdown.css}">
     <link rel="stylesheet" th:href="@{/css/form.css}">
-    <link rel="stylesheet" th:href="@{/css/inputs.css}">
+    <link rel="stylesheet" th:href="@{/css/input.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
 </head>
 <body>
+<div th:replace="fragment/navbar.html::navbar"></div>
 <div class="background-section">
-    <div class="form-container">
-        <form>
+    <div class="form-container container">
+        <form th:action="@{/register}" th:object="${registerDto}" method="post">
+            <h1 class="container-heading">Register Form</h1>
             <div class="row mb-3 gy-3">
                 <div class="col-md-6">
-                    <input type="text" class="form-control" placeholder="First Name" name="first_name" required>
+                    <input th:field="*{firstName}" type="text" class="form-control" placeholder="First Name" required>
+                    <div th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="text-danger fs-6"></div>
                 </div>
                 <div class="col-md-6">
-                    <input type="text" class="form-control" placeholder="Last Name" name="last_name" required>
+                    <input th:field="*{lastName}" type="text" class="form-control" placeholder="Last Name" required>
+                    <div th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="text-danger"></div>
                 </div>
             </div>
-
             <div class="mb-3">
-                <input type="text" class="form-control" placeholder="Username" name="username" required>
+                <input th:field="*{username}" type="text" class="form-control" placeholder="Username" required>
+                <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger"></div>
             </div>
             <div class="mb-3">
-                <input type="email" class="form-control" placeholder="Email" name="email" required>
+                <input th:field="*{email}" type="email" class="form-control" placeholder="Email" required>
+                <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></div>
             </div>
-
-            <div class="row mb-3 g-2">
-                <div class="col">
-                    <input type="number" class="form-control" placeholder="Age" name="age" min="10" max="120"
-                           required>
+            <div class="row mb-3 g-3">
+                <div class="col-6 col-md-6 col-lg-3">
+                    <input th:field="*{age}" type="number" class="form-control" placeholder="Age" min="10" max="120" required>
+                    <div th:if="${#fields.hasErrors('age')}" th:errors="*{age}" class="text-danger"></div>
                 </div>
-
-                <div class="col">
+                <div class="col-6 col-md-6 col-lg-3">
+                    <input th:field="*{weight}" type="number" class="form-control" placeholder="Weight (kg)" min="20" max="300" step="0.1" required>
+                    <div th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}" class="text-danger"></div>
+                </div>
+                <div class="col-6 col-md-6 col-lg-3">
                     <div class="gender-select">
-                        <button type="button" class="gender-button w-100">
-                            <span class="d-none d-sm-inline">Select Gender</span>
-                            <span class="d-inline d-sm-none">Gender</span>
-                        </button>
+                        <button type="button" class="gender-button">Gender</button>
                         <div class="gender-options">
-                            <input type="radio" id="male" name="gender" value="Male">
+                            <input th:field="*{gender}" type="radio" id="male" name="gender" value="MALE">
                             <label for="male">Male</label>
-                            <input type="radio" id="female" name="gender" value="Female">
+                            <input th:field="*{gender}" type="radio" id="female" name="gender" value="FEMALE">
                             <label for="female">Female</label>
                         </div>
                     </div>
+                    <div th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="text-danger"></div>
                 </div>
-
-                <div class="col">
-                    <input type="number" class="form-control" placeholder="Weight (kg)" name="weight" min="20"
-                           max="300" step="0.1" required>
+                <div class="col-6 col-md-6 col-lg-3">
+                    <div class="experience-select">
+                        <button type="button" class="experience-button">Experience</button>
+                        <div class="experience-options">
+                            <input th:field="*{experience}" type="radio" id="exp-novice" name="experience" value="NOVICE">
+                            <label for="exp-novice">Novice</label>
+                            <input th:field="*{experience}" type="radio" id="exp-beginner" name="experience" value="BEGINNER">
+                            <label for="exp-beginner">Beginner</label>
+                            <input th:field="*{experience}" type="radio" id="exp-medium" name="experience" value="MEDIUM">
+                            <label for="exp-medium">Medium</label>
+                            <input th:field="*{experience}" type="radio" id="exp-advanced" name="experience" value="ADVANCED">
+                            <label for="exp-advanced">Advanced</label>
+                            <input th:field="*{experience}" type="radio" id="exp-master" name="experience" value="MASTER">
+                            <label for="exp-master">Master</label>
+                        </div>
+                    </div>
+                    <div th:if="${#fields.hasErrors('experience')}" th:errors="*{experience}" class="text-danger"></div>
                 </div>
             </div>
-
             <div class="mb-3">
-                <input type="password" class="form-control" placeholder="Password" name="password" required>
+                <input th:field="*{password}" type="password" class="form-control" placeholder="Password" required>
+                <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></div>
             </div>
             <div class="mb-3">
-                <input type="password" class="form-control" placeholder="Confirm Password" name="confirm_password"
-                       required>
+                <input th:field="*{confirmPassword}" type="password" class="form-control" placeholder="Confirm Password" required>
+                <div th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" class="text-danger"></div>
             </div>
-
             <div class="row justify-content-center">
                 <div class="col-md-5">
                     <button type="submit" class="btn btn-theme w-100">Register</button>

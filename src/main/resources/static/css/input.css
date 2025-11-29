@@ -1,3 +1,9 @@
+input:-webkit-autofill {
+    background-color: rgb(127, 135, 135) !important;
+    color: #000 !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
 .form-control {
     background-color: rgb(127, 135, 135);
     border-color: rgb(127, 135, 135);
@@ -20,7 +26,6 @@
     transition: color 0.3s;
 }
 
-/* Remove arrows in number inputs */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;

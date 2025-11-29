@@ -1,0 +1,46 @@
+a {
+    color: rgb(172, 165, 185);
+    font-size: 30px;
+    text-decoration: none;
+}
+
+.logo {
+    display: block;
+    width: 20%;
+    max-width: 150px;
+    min-width: 80px;
+    min-height: 15px;
+    max-height: 35px;
+}
+
+.navbar{
+    width: 100%;
+    background: rgba(11, 14, 19);
+    /*display: flex;*/
+    padding-left: 8%;
+    padding-right: 8%;
+}
+
+.navbar-collapse {
+    transition: max-height 0.3s ease;
+    overflow: hidden;
+}
+
+@media (max-width: 490px) {
+    .navbar-collapse {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: rgba(11, 14, 19, 0.85);
+        z-index: 9999;
+    }
+
+    .navbar-nav {
+        flex-direction: column;
+    }
+
+    .nav-item{
+        padding-left: 8%;
+    }
+}

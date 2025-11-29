@@ -1,5 +1,6 @@
 package com.example.fitplanner.entity.model;
 
+import com.example.fitplanner.entity.enums.Difficulty;
 import com.example.fitplanner.entity.enums.Gender;
 import com.example.fitplanner.entity.enums.Role;
 import jakarta.persistence.*;
@@ -39,9 +40,8 @@ public class User extends BaseEntity{
     @Max(300)
     private Double weight;
 
-    @Min(0)
-    @Max(50)
-    private Integer yearsOfExperience;
+    @Enumerated(EnumType.STRING)
+    private Difficulty experience;
 
     @Email
     private String email;
