@@ -76,3 +76,65 @@
 .create-workout-log {
     padding: 2rem 1rem;
 }
+
+.log-container{
+    width: 100%;
+    max-width: 830px;
+    padding: 30px;
+    border-radius: 10px;
+    position: relative;
+}
+
+.exercise-image-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.exercise-grid-container {
+    max-height: 70vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 0.5rem;
+}
+
+
+
+
+/* --- scrollbars --- */
+.scrollable-container {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* WebKit browsers */
+.scrollable-container::-webkit-scrollbar {
+    width: 7px; /* thin scrollbar */
+}
+
+.scrollable-container::-webkit-scrollbar-button {
+    display: none; /* remove arrows */
+}
+
+.scrollable-container::-webkit-scrollbar-track {
+    background: transparent; /* optional track styling */
+}
+
+.scrollable-container::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.2); /* keep thumb visible */
+    border-radius: 3px;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(0,0,0,0.3);
+}
+
+/* Firefox */
+.scrollable-container {
+    scrollbar-width: thin; /* thin scrollbar */
+    scrollbar-color: rgba(0,0,0,0.2) transparent; /* thumb and track */
+}

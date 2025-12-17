@@ -52,10 +52,16 @@ body {
 @media (min-width: 1200px) {
     .col-xl-day {
         flex: 0 0 auto;
-        width: 14.2857%;
+        width: 14%;
     }
 }
 
 input:-webkit-autofill {
     transition: background-color 5000s;
+}
+
+input:focus {
+    outline: none;
+    box-shadow: none !important;
+    border-color: inherit;
 }

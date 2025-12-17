@@ -5,6 +5,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -12,6 +13,7 @@ import java.util.Set;
 
 @Entity
 @Getter
+@ToString
 public class WorkoutSession extends BaseEntity{
     @ManyToOne
     private Program program;

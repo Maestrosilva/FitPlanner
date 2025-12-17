@@ -28,7 +28,7 @@ public class SettingsController {
     @GetMapping("/settings")
     public String getSettings(HttpSession session,
                               Model model) {
-        UserDto userDto = (UserDto) session.getAttribute("loggedInUser");
+        UserDto userDto = (UserDto) session.getAttribute("loggedUser");
         String theme = (String) session.getAttribute("theme");
         String language = (String) session.getAttribute("language");
         String units = (String) session.getAttribute("units");
@@ -69,11 +69,11 @@ public class SettingsController {
         if (!language.matches("en|bg|es|fr")) language = "en";
         session.setAttribute("language", language);
         localeResolver.setLocale(request, response, new Locale(language));
-        UserDto userDto = (UserDto) session.getAttribute("loggedInUser");
+        UserDto userDto = (UserDto) session.getAttribute("loggedUser");
         if (userDto != null) {
             userDto.setLanguage(language);
             userService.updateUserSettings(userDto);
-            session.setAttribute("loggedInUser", userDto);
+            session.setAttribute("loggedUser", userDto);
         }
         return "redirect:/settings";
     }
@@ -89,14 +89,14 @@ public class SettingsController {
         if (userDto != null) {
             userDto.setLanguage(language);
             userService.updateUserSettings(userDto);
-            UserDto currentUser = (UserDto) session.getAttribute("loggedInUser");
+            UserDto currentUser = (UserDto) session.getAttribute("loggedUser");
             if (currentUser != null && currentUser.getId().equals(id)) {
                 session.setAttribute("language", language);
-                session.setAttribute("loggedInUser", userDto);
+                session.setAttribute("loggedUser", userDto);
                 localeResolver.setLocale(request, response, new Locale(language));
             }
         }
-        session.setAttribute("loggedInUser", userDto);
+        session.setAttribute("loggedUser", userDto);
         return "redirect:/settings";
     }
 
@@ -105,11 +105,11 @@ public class SettingsController {
                               HttpSession session) {
         if (!theme.matches("light|dark")) theme = "dark";
         session.setAttribute("theme", theme);
-        UserDto userDto = (UserDto) session.getAttribute("loggedInUser");
+        UserDto userDto = (UserDto) session.getAttribute("loggedUser");
         if (userDto != null) {
             userDto.setTheme(theme);
             userService.updateUserSettings(userDto);
-            session.setAttribute("loggedInUser", userDto);
+            session.setAttribute("loggedUser", userDto);
         }
         return "redirect:/settings";
     }
@@ -123,13 +123,13 @@ public class SettingsController {
         if (userDto != null) {
             userDto.setTheme(theme);
             userService.updateUserSettings(userDto);
-            UserDto currentUser = (UserDto) session.getAttribute("loggedInUser");
+            UserDto currentUser = (UserDto) session.getAttribute("loggedUser");
             if (currentUser != null && currentUser.getId().equals(id)) {
                 session.setAttribute("theme", theme);
-                session.setAttribute("loggedInUser", userDto);
+                session.setAttribute("loggedUser", userDto);
             }
         }
-        session.setAttribute("loggedInUser", userDto);
+        session.setAttribute("loggedUser", userDto);
         return "redirect:/settings";
     }
 
@@ -138,11 +138,11 @@ public class SettingsController {
                               HttpSession session) {
         if (!units.matches("kg|lb")) units = "kg";
         session.setAttribute("units", units);
-        UserDto userDto = (UserDto) session.getAttribute("loggedInUser");
+        UserDto userDto = (UserDto) session.getAttribute("loggedUser");
         if (userDto != null) {
             userDto.setMeasuringUnits(units);
             userService.updateUserSettings(userDto);
-            session.setAttribute("loggedInUser", userDto);
+            session.setAttribute("loggedUser", userDto);
         }
         return "redirect:/settings";
     }
@@ -156,13 +156,13 @@ public class SettingsController {
         if (userDto != null) {
             userDto.setMeasuringUnits(units);
             userService.updateUserSettings(userDto);
-            UserDto currentUser = (UserDto) session.getAttribute("loggedInUser");
+            UserDto currentUser = (UserDto) session.getAttribute("loggedUser");
             if (currentUser != null && currentUser.getId().equals(id)) {
                 session.setAttribute("units", units);
-                session.setAttribute("loggedInUser", userDto);
+                session.setAttribute("loggedUser", userDto);
             }
         }
-        session.setAttribute("loggedInUser", userDto);
+        session.setAttribute("loggedUser", userDto);
         return "redirect:/settings";
     }
 }

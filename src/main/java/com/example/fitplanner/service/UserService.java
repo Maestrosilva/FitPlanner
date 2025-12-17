@@ -62,7 +62,9 @@ public class UserService {
     public void save(UserRegisterDto userRegisterDto) {
         userRegisterDto.setRole(determineRole(userRegisterDto.getUsername()));
         userRegisterDto.setPassword(hasher.hash(userRegisterDto.getPassword()));
+        System.out.println(userRegisterDto);
         User user = modelMapper.map(userRegisterDto, User.class);
+        System.out.println(user);
         userRepository.save(user);
     }
 

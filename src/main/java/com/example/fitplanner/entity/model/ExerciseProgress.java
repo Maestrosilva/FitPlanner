@@ -6,11 +6,13 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
 @Entity
 @Getter
+@ToString
 public class ExerciseProgress extends BaseEntity{
     @ManyToOne
     private WorkoutSession workoutSession;

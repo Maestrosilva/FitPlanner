@@ -15,6 +15,7 @@ import java.util.Set;
 @Getter
 @RequiredArgsConstructor
 @NoArgsConstructor
+@ToString
 public class User extends BaseEntity {
 
     @NonNull
@@ -76,6 +77,7 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private Set<ExerciseProgress> completedExercises = new HashSet<>();
 
+    @Column
     private String profileImageUrl;
 
     @Column(nullable = false)

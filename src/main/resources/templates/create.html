@@ -37,7 +37,7 @@
                          class="days-container col-6 col-md-4 col-lg-3 mb-3">
 
                         <!-- DAY CARD -->
-                        <form th:action="@{/add-exercise/{day}/id/{id}(day=${dayWorkout.day},id=${userDto.id})}" method="post">
+                        <form th:action="@{/add-exercise/{day}/{id}(day=${dayWorkout.day},id=${userDto.id})}" method="post">
                             <button type="submit" class="card h-100 text-center day-card p-0">
                                 <div class="card-body">
                                     <h6 th:text="${#messages.msg(dayWorkout.day.toLowerCase())}"></h6>

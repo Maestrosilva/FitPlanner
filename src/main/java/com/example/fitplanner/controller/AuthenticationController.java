@@ -42,7 +42,7 @@ public class AuthenticationController {
         userService.save(registerDto);
         Long userId = userService.getIdByUsernameOrEmail(registerDto.getUsername());
         UserDto userDto = userService.getById(userId);
-        session.setAttribute("loggedInUser", userDto);
+        session.setAttribute("loggedUser", userDto);
         session.setAttribute("theme", userDto.getTheme());
         session.setAttribute("language", userDto.getLanguage());
         return "redirect:/home/" + userId;
@@ -68,7 +68,7 @@ public class AuthenticationController {
         }
         Long userId = userService.getIdByUsernameOrEmail(loginDto.getUsernameOrEmail());
         UserDto userDto = userService.getById(userId);
-        session.setAttribute("loggedInUser", userDto);
+        session.setAttribute("loggedUser", userDto);
         session.setAttribute("theme", userDto.getTheme());
         session.setAttribute("language", userDto.getLanguage());
         return "redirect:/home/" + userId;

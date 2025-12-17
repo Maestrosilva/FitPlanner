@@ -15,7 +15,7 @@ public class AboutController {
     @GetMapping("/about")
     public String getAbout(HttpSession session, Model model) {
         addThemeAndLanguage(session, model);
-        UserDto userDto = (UserDto) session.getAttribute("loggedInUser");
+        UserDto userDto = (UserDto) session.getAttribute("loggedUser");
         model.addAttribute("userDto", userDto);
         return "about";
     }

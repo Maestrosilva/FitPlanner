@@ -7,6 +7,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -14,6 +15,7 @@ import java.util.Set;
 
 @Entity
 @Getter
+@ToString
 public class Program extends BaseEntity{
     @Column
     @Size(min = 2, max = 64)
