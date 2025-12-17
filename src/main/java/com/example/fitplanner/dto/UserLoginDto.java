@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @Component
 @Data
-public class UserLoginDto implements Serializable {
+public class UserLoginDto implements Serializable{
     @NotBlank
     private String usernameOrEmail;
 

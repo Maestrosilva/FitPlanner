@@ -16,31 +16,28 @@ public class DataInitializer {
     private final UserRepository userRepository;
 
     @Autowired
-    private final PasswordEncoder passwordEncoder;
-
+    final private SHA256Hasher hasher;
     public DataInitializer(UserRepository userRepository,
-                           PasswordEncoder passwordEncoder) {
+                           SHA256Hasher hasher) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.hasher = hasher;
     }
 
     @PostConstruct
     public void init() {
         if (!userRepository.existsByRole(Role.ADMIN)) {
-
-            User admin = new User();
-            admin.setFirstName("Default");
-            admin.setLastName("Admin");
-            admin.setUsername("admin");
-            admin.setPassword(passwordEncoder.encode("admin123"));
-            admin.setRole(Role.ADMIN);
-
-            admin.setGender(Gender.MALE);
-            admin.setExperience(Difficulty.BEGINNER);
-            admin.setAge(30);
-            admin.setWeight(80.0);
-
-            admin.setEmail("admincho@gmail.com");
+            User admin = new User(
+                    "Admin",
+                    "Admin",
+                    "admin",
+                    Role.ADMIN,
+                    Gender.MALE,
+                    30,
+                    80.0,
+                    Difficulty.BEGINNER,
+                    hasher.hash("admin123"),
+                    "admincho@gmail.com"
+            );
 
             userRepository.save(admin);
         }

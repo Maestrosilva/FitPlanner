@@ -9,9 +9,10 @@ import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.Getter;
 
 @Entity
-@Data
+@Getter
 public class Exercise extends BaseEntity{
     @NotBlank
     @Size(min = 3, max = 32)

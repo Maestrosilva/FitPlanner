@@ -1,6 +1,7 @@
 package com.example.fitplanner.dto;
 import com.example.fitplanner.entity.enums.Difficulty;
 import com.example.fitplanner.entity.enums.Gender;
+import com.example.fitplanner.entity.enums.Role;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
@@ -11,7 +12,7 @@ import java.io.Serializable;
 
 @Component
 @Data
-public class UserRegisterDto implements Serializable {
+public class UserRegisterDto implements Serializable{
     @NotBlank
     @Size(min = 2, message = "First name MUST be at least 2 characters")
     @Size(max = 24, message = "First name MUST be at most 24 characters")
@@ -52,4 +53,6 @@ public class UserRegisterDto implements Serializable {
 
     @NotBlank
     private String confirmPassword;
+
+    private Role role;
 }

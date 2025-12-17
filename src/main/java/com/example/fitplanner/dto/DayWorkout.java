@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class DayWorkout implements Serializable {
+public class DayWorkout implements Serializable{
     private String day;
     private List<ExerciseProgressDto> exercises;
 }

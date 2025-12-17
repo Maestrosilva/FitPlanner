@@ -8,6 +8,7 @@ import com.example.fitplanner.entity.enums.Role;
 import com.example.fitplanner.entity.model.User;
 import com.example.fitplanner.repository.UserRepository;
 import com.example.fitplanner.util.SHA256Hasher;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,9 +60,9 @@ public class UserService {
     }
 
     public void save(UserRegisterDto userRegisterDto) {
+        userRegisterDto.setRole(determineRole(userRegisterDto.getUsername()));
+        userRegisterDto.setPassword(hasher.hash(userRegisterDto.getPassword()));
         User user = modelMapper.map(userRegisterDto, User.class);
-        user.setRole(determineRole(user.getUsername()));
-        user.setPassword(hasher.hash(user.getPassword()));
         userRepository.save(user);
     }
 
@@ -94,13 +95,9 @@ public class UserService {
     }
 
     public void updateUserSettings(UserDto userDto) {
-        if (userDto == null || userDto.getId() == null) return;
+        User user = userRepository.findById(userDto.getId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        User user = userRepository.findById(userDto.getId()).orElse(null);
-        if (user != null) {
-            user.setTheme(userDto.getTheme());
-            user.setLanguage(userDto.getLanguage());
-            userRepository.save(user);
-        }
+        user.updatePreferences(userDto.getTheme(), userDto.getLanguage(),  userDto.getMeasuringUnits());
     }
 }

@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
-public class ExerciseProgressDto implements Serializable {
+public class ExerciseProgressDto implements Serializable{
     private String name;
     private double weight;
     private int reps;

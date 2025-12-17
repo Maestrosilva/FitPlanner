@@ -5,49 +5,63 @@ import com.example.fitplanner.entity.enums.Gender;
 import com.example.fitplanner.entity.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.Data;
+import lombok.*;
+
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Data
-public class User extends BaseEntity{
+@Getter
+@RequiredArgsConstructor
+@NoArgsConstructor
+public class User extends BaseEntity {
+
+    @NonNull
     @NotBlank
     @Size(min = 2, max = 24)
     private String firstName;
 
+    @NonNull
     @NotBlank
     @Size(min = 2, max = 24)
     private String lastName;
 
+    @NonNull
     @NotBlank
     @Size(max = 64)
     private String username;
 
+    @NonNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
+    @NonNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Gender gender;
 
+    @NonNull
     @Min(10)
     @Max(120)
     private Integer age;
 
+    @NonNull
     @Min(20)
     @Max(300)
     private Double weight;
 
+    @NonNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Difficulty experience;
 
+    @NonNull
     @Email
     private String email;
 
+    @NonNull
     @NotBlank
     @Size(min = 4)
     private String password;
@@ -72,4 +86,10 @@ public class User extends BaseEntity{
 
     @Column(nullable = false)
     private String measuringUnits = "kg";
+
+    public void updatePreferences(String theme, String language, String units) {
+        this.theme = theme;
+        this.language = language;
+        this.measuringUnits = units;
+    }
 }

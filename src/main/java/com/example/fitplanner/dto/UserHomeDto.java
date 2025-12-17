@@ -7,6 +7,6 @@ import java.io.Serializable;
 
 @Component
 @Data
-public class UserHomeDto implements Serializable {
+public class UserHomeDto implements Serializable{
 
 }

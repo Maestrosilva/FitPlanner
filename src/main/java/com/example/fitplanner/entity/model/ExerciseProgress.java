@@ -5,11 +5,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDate;
 
 @Entity
-@Data
+@Getter
 public class ExerciseProgress extends BaseEntity{
     @ManyToOne
     private WorkoutSession workoutSession;
