@@ -1,0 +1,13 @@
+<div th:fragment="search-bar(id, placeholder)">
+    <div class="search-container-inner">
+        <div class="input-group">
+            <span class="input-group-text">
+                <img th:src="@{/images/search.jfif}" alt="Search" class="search-icon">
+            </span>
+            <input type="search"
+                   th:id="${id}"
+                   class="form-control search-input"
+                   th:placeholder="${placeholder}">
+        </div>
+    </div>
+</div>

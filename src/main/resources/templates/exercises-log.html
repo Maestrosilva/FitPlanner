@@ -12,6 +12,9 @@
     <link rel="stylesheet" th:href="@{/css/footer.css}">
     <link rel="stylesheet" th:href="@{/css/dark-theme.css}">
     <link rel="stylesheet" th:href="@{/css/light-theme.css}">
+    <link rel="stylesheet" th:href="@{/css/search-bar.css}">
+
+    <link rel="stylesheet" th:href="@{/css/scrollbar.css}">
     <link rel="stylesheet" th:href="@{/css/exercise-log.css}">
 </head>
 <body>
@@ -22,21 +25,9 @@
             <button type="submit" class="close-btn bg-danger" th:title="#{exercise.close}">✕</button>
         </form>
         <!-- ================= SEARCH ================= -->
-        <div class="row mb-3">
-            <div class="col-12">
-                <div class="input-group">
-                    <span class="input-group-text">
-                        <img th:src="@{/images/search.jfif}" alt="Search" class="search-icon">
-                    </span>
-                    <input type="search"
-                           id="exerciseSearch"
-                           class="form-control"
-                           th:placeholder="#{exercise.search_placeholder}">
-                </div>
-            </div>
-        </div>
+        <div th:replace="fragment/search-bar.html :: search-bar('exerciseSearch', #{exercise.search_placeholder})"></div>
         <!-- ================= FILTERS ================= -->
-        <div class="row mb-4">
+        <div class="row mb-4 mt-3">
             <div class="col-md-4 mb-2">
                 <select id="categoryFilter" class="form-select">
                     <option value="" th:text="#{exercise.all_categories}">All Categories</option>

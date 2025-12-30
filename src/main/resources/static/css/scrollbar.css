@@ -1,30 +1,35 @@
 .scrollable-container {
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
     overflow-x: hidden;
+
+    scrollbar-width: thin;
+    scrollbar-color: #28a745 #f1f1f1;
 }
 
 .scrollable-container::-webkit-scrollbar {
-    width: 7px;
-}
-
-.scrollable-container::-webkit-scrollbar-button {
-    display: none;
+    width: 6px;
+    height: 6px;
 }
 
 .scrollable-container::-webkit-scrollbar-track {
-    background: transparent;
+    background: #f1f1f1;
+    border-radius: 10px;
 }
 
 .scrollable-container::-webkit-scrollbar-thumb {
-    background: rgba(0,0,0,0.2);
-    border-radius: 3px;
+    background: #28a745;
+    border-radius: 10px;
+    border: 1px solid #f1f1f1;
 }
 
 .scrollable-container::-webkit-scrollbar-thumb:hover {
-    background: rgba(0,0,0,0.3);
+    background: #218838;
 }
 
-.scrollable-container {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(0,0,0,0.2) transparent;
+@media (max-width: 768px) {
+    .scrollable-container::-webkit-scrollbar {
+        width: 4px;
+    }
 }

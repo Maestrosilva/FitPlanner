@@ -1,48 +1,63 @@
-a {
-    font-size: 30px;
-    text-decoration: none;
-}
-
-.logo {
-    display: block;
-    width: 20%;
-    max-width: 150px;
-    min-width: 80px;
-    min-height: 15px;
-    max-height: 35px;
-}
-
 .navbar {
     position: fixed;
     top: 0;
     width: 100%;
-    display: flex;
-    padding-left: 8%;
-    padding-right: 8%;
     z-index: 9999;
+    background-color: #212529;
+    padding: 0.5rem 2%;
+    min-height: 70px;
+    display: flex;
+    align-items: center;
 }
 
-.navbar-collapse {
-    transition: max-height 0.3s ease;
-    overflow: hidden;
+.logo {
+    height: 40px;
+    width: auto;
+    display: block;
 }
 
-@media (max-width: 490px) {
+.navbar-brand {
+    padding: 0;
+    margin-right: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+/* Nav Links & Roles */
+.navbar-nav {
+    display: flex;
+    align-items: center;
+}
+
+.nav-item {
+    margin-left: 1rem;
+}
+
+.nav-link {
+    font-size: 1rem;
+    color: #fff;
+    transition: color 0.2s;
+}
+
+@media (max-width: 991.98px) {
     .navbar-collapse {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        z-index: 9999;
+        flex-basis: 100%;
+        margin-top: 0.5rem;
     }
 
     .navbar-nav {
         flex-direction: column;
-        /*z-index: 10;*/
+        width: 100%;
     }
 
     .nav-item {
-        padding-left: 8% !important;
-        margin-block-end: 3px !important;
+        width: 100%;
+        margin-left: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-link {
+        padding: 0.8rem 1rem;
+        display: block;
     }
 }

@@ -1,11 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
-
-    const searchInput = document.getElementById("exerciseSearch");
-
-    if (!searchInput || !window.applyExerciseFilters) return;
-
-    searchInput.addEventListener("input", function () {
-        const query = this.value.toLowerCase().trim();
-        window.applyExerciseFilters(query);
+    const searchInputs = document.querySelectorAll(".search-input");
+    searchInputs.forEach(searchInput => {
+        if (!window.applyExerciseFilters) {
+            console.warn("applyExerciseFilters function not found on window.");
+            return;
+        }
+        searchInput.addEventListener("input", function () {
+            const query = this.value.toLowerCase().trim();
+            window.applyExerciseFilters(query);
+        });
     });
 });
