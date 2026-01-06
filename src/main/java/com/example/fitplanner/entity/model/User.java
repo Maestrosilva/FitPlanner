@@ -17,7 +17,7 @@ import java.util.Set;
 
 @Entity
 @Getter
-@ToString
+@ToString(exclude = {"programs", "completedExercises"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
     @NotBlank

@@ -1,5 +1,32 @@
-// --- Calendar JS --- //
 let currentDate = new Date();
+function addFormAttributes(dayForm, year, month, day, selectedIds) {
+    dayForm.action = '/session';
+    dayForm.method = 'get';
+    dayForm.className = 'calendar-day-form';
+    const params = { year, month, day };
+    Object.keys(params).forEach(key => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = params[key];
+        dayForm.appendChild(input);
+    });
+
+    selectedIds.forEach(id => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'programIds';
+        input.value = id;
+        dayForm.appendChild(input);
+    });
+
+    const dayButton = document.createElement('button');
+    dayButton.type = 'submit';
+    dayButton.className = 'calendar-day-button';
+    dayButton.innerText = day;
+
+    dayForm.appendChild(dayButton);
+}
 
 function getSelectedWorkoutDates() {
     const selectedCheckboxes = document.querySelectorAll(".program-checkbox:checked");
@@ -20,7 +47,12 @@ function isToday(year, month, day) {
 
 function loadCalendar() {
     const workoutDates = getSelectedWorkoutDates();
+
+    const selectedIds = Array.from(document.querySelectorAll(".program-checkbox:checked"))
+        .map(cb => cb.getAttribute('data-id'));
+
     const calendarDays = document.getElementById("calendarDays");
+    if (!calendarDays) return;
     calendarDays.innerHTML = "";
 
     const year = currentDate.getFullYear();
@@ -28,7 +60,6 @@ function loadCalendar() {
 
     const firstDay = new Date(year, month, 1).getDay();
     const firstDayIndex = (firstDay === 0) ? 6 : firstDay - 1;
-
     const lastDate = new Date(year, month + 1, 0).getDate();
 
     document.getElementById("monthDisplay").innerText =
@@ -46,7 +77,10 @@ function loadCalendar() {
 
         const dayDiv = document.createElement('div');
         dayDiv.className = `day ${isToday(year, month, d) ? 'today' : ''} ${hasWorkout ? 'workout-day' : ''}`;
-        dayDiv.innerText = d;
+
+        const dayForm = document.createElement('form');
+        addFormAttributes(dayForm, year, month + 1, d, selectedIds);
+        dayDiv.appendChild(dayForm);
         calendarDays.appendChild(dayDiv);
     }
 }
@@ -55,11 +89,14 @@ function updateCalendar() {
     loadCalendar();
 }
 
-document.getElementById("selectAllPrograms").addEventListener("change", function() {
-    const checkboxes = document.querySelectorAll(".program-checkbox");
-    checkboxes.forEach(cb => cb.checked = this.checked);
-    updateCalendar();
-});
+const selectAllBtn = document.getElementById("selectAllPrograms");
+if (selectAllBtn) {
+    selectAllBtn.addEventListener("change", function() {
+        const checkboxes = document.querySelectorAll(".program-checkbox");
+        checkboxes.forEach(cb => cb.checked = this.checked);
+        updateCalendar();
+    });
+}
 
 document.getElementById("prevMonth").onclick = () => {
     currentDate.setMonth(currentDate.getMonth() - 1);

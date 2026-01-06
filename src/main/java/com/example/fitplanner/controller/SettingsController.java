@@ -1,7 +1,6 @@
 package com.example.fitplanner.controller;
 
 import com.example.fitplanner.dto.UserDto;
-import com.example.fitplanner.service.SessionModelService;
 import com.example.fitplanner.service.UserService;
 import jakarta.servlet.http.*;
 import org.springframework.stereotype.Controller;
@@ -17,20 +16,14 @@ public class SettingsController {
 
     private final UserService userService;
     private final LocaleResolver localeResolver;
-    private final SessionModelService sessionModelService;
-
     public SettingsController(UserService userService,
-                              LocaleResolver localeResolver,
-                              SessionModelService sessionModelService) {
+                              LocaleResolver localeResolver) {
         this.userService = userService;
         this.localeResolver = localeResolver;
-        this.sessionModelService = sessionModelService;
     }
 
     @GetMapping
     public String getSettings(HttpSession session, Model model) {
-        sessionModelService.populateModel(session, model);
-        sessionModelService.clearSession(session);
         return "settings";
     }
 

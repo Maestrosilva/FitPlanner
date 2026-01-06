@@ -5,7 +5,7 @@
 }
 
 @media (max-width: 768px) {
-    * {
+    div {
         font-size: 1rem;
     }
 }
@@ -38,7 +38,7 @@ body {
     font-family: Bahnschrift, serif;
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 992px) {
     body {
         padding-top: 85px;
     }

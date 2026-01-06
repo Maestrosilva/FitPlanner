@@ -1,9 +1,6 @@
 package com.example.fitplanner.entity.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -13,17 +10,17 @@ import java.util.Set;
 
 @Entity
 @Getter
-@ToString
+@ToString(exclude = {"program"})
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class WorkoutSession extends BaseEntity {
-    @ManyToOne(optional = false)
-    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "program_id")
     private Program program;
 
     @Column(nullable = false)
     private LocalDate scheduledFor;
 
-    @OneToMany(mappedBy = "workoutSession")
+    @OneToMany(mappedBy = "workoutSession", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ExerciseProgress> exercises = new HashSet<>();
 
     public WorkoutSession(Program program, LocalDate scheduledFor) {

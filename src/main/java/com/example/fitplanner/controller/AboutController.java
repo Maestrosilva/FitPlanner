@@ -8,17 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class AboutController {
-
-    private final SessionModelService sessionModelService;
-
-    @Autowired
-    public AboutController(SessionModelService sessionModelService) {
-        this.sessionModelService = sessionModelService;
+    public AboutController() {
     }
 
     @GetMapping("/about")
     public String getAbout(HttpSession session, Model model) {
-        sessionModelService.populateModel(session, model);
         return "about";
     }
 }

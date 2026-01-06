@@ -16,6 +16,9 @@ public class ExerciseProgressDto implements Serializable {
     private Integer sets;
     private Double weight;
 
+    private Boolean finished = false;
+    private String programName;
+
     private static final AtomicLong counter = new AtomicLong(1);
 
     public ExerciseProgressDto(Long exerciseId, String name, Integer reps, Integer sets, Double weight) {

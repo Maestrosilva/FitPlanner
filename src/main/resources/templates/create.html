@@ -21,7 +21,9 @@
 <div class="background-section py-4">
     <div class="container create-workout-log p-2">
         <h2 th:text="#{create.workout}" class="text-center mb-4 text-dark">Create Workout</h2>
-        <form id="programForm" th:action="@{/create-full-workout}" th:object="${programForm}" method="post">
+        <form id="programForm"
+              th:action="${programId == null} ? @{'/create-full-workout'} : @{'edit-program'}"
+              th:object="${programForm}" method="post">
             <div class="row g-3 align-items-end mb-5">
                 <div class="col-12 col-md-4">
                     <label class="form-label fw-bold" th:text="#{create.program_name}">Program Name</label>
@@ -96,7 +98,7 @@
             </div>
         </div>
         <div class="text-center mt-5">
-            <button form="programForm" type="submit" class="btn bg-success btn-lg px-5 shadow rounded-pill fw-bold" th:text="#{create.submit}">CREATE PROGRAM</button>
+            <button form="programForm" type="submit" class="btn bg-success btn-lg px-5 shadow rounded-pill fw-bold" th:text="${programId == null} ? #{create.submit} : #{create.update}">CREATE PROGRAM</button>
         </div>
     </div>
 </div>

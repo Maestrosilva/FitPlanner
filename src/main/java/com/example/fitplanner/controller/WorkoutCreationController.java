@@ -3,7 +3,6 @@ package com.example.fitplanner.controller;
 import com.example.fitplanner.dto.*;
 import com.example.fitplanner.service.ExerciseService;
 import com.example.fitplanner.service.ProgramService;
-import com.example.fitplanner.service.SessionModelService;
 import com.example.fitplanner.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -18,23 +17,18 @@ public class WorkoutCreationController {
     private final UserService userService;
     private final ProgramService programService;
     private final ExerciseService exerciseService;
-    private final SessionModelService sessionModelService;
-
     public WorkoutCreationController(UserService userService,
                                      ProgramService programService,
-                                     ExerciseService exerciseService,
-                                     SessionModelService sessionModelService) {
+                                     ExerciseService exerciseService) {
         this.userService = userService;
         this.programService = programService;
         this.exerciseService = exerciseService;
-        this.sessionModelService = sessionModelService;
     }
 
     @GetMapping("/create")
     public String createWorkout(HttpSession session, Model model) {
         UserDto sessionUser = (UserDto) session.getAttribute("loggedUser");
         if (sessionUser == null) return "redirect:/login";
-        sessionModelService.populateModel(session, model);
         CreatedProgramDto programForm = (CreatedProgramDto) session.getAttribute("programForm");
         if (programForm == null) {
             programForm = new CreatedProgramDto();
@@ -60,6 +54,8 @@ public class WorkoutCreationController {
                     order.indexOf(day.getDay().toUpperCase())));
         }
         model.addAttribute("weekDays", weekDays);
+        Long programId = (Long) session.getAttribute("programId");
+        model.addAttribute("programId", programId);
         return "create";
     }
 
@@ -68,7 +64,6 @@ public class WorkoutCreationController {
                                   HttpSession session,
                                   Model model){
         if (session.getAttribute("loggedUser") == null) return "redirect:/login";
-        sessionModelService.populateModel(session, model);
         if(day != null) session.setAttribute("currentDay", day);
         Set<ExerciseDto> exercises = exerciseService.getAll();
         model.addAttribute("exercises", exercises);
@@ -80,7 +75,6 @@ public class WorkoutCreationController {
                                @RequestParam Long id,
                                HttpSession session,
                                Model model) {
-        sessionModelService.populateModel(session, model);
         session.setAttribute("currentDay", day);
         session.setAttribute("exerciseId", id);
         List<DayWorkout> weekDays = (List<DayWorkout>) session.getAttribute("weekDays");
@@ -108,11 +102,15 @@ public class WorkoutCreationController {
                                HttpSession session) {
         String day = (String) session.getAttribute("currentDay");
         List<DayWorkout> weekDays = (List<DayWorkout>) session.getAttribute("weekDays");
+
         if (weekDays != null && day != null && dto.getId() != null) {
             for (DayWorkout dw : weekDays) {
                 if (dw.getDay().equalsIgnoreCase(day)) {
                     for (ExerciseProgressDto existing : dw.getExercises()) {
                         if (existing.getId().equals(dto.getId())) {
+                            existing.setWeight(dto.getWeight());
+                            existing.setReps(dto.getReps());
+                            existing.setSets(dto.getSets());
                             break;
                         }
                     }
@@ -120,6 +118,7 @@ public class WorkoutCreationController {
                 }
             }
         }
+
         session.setAttribute("weekDays", weekDays);
         return "redirect:/create";
     }
@@ -129,7 +128,6 @@ public class WorkoutCreationController {
                                        HttpSession session,
                                        Model model) {
         ExerciseDto exerciseDto = exerciseService.getById(exerciseId);
-        sessionModelService.populateModel(session, model);
         session.removeAttribute("exercise");
         session.setAttribute("exercise", exerciseDto);
         model.addAttribute("exercise", exerciseDto);
@@ -180,7 +178,6 @@ public class WorkoutCreationController {
 
     @PostMapping("/show/{id}")
     public String showExercise(@PathVariable Long id, HttpSession session, Model model){
-        sessionModelService.populateModel(session, model);
         ExerciseDto exerciseDto = exerciseService.getById(id);
         if (exerciseDto == null) return "redirect:/exercise-log";
         session.setAttribute("currentExercise", exerciseDto);
@@ -211,9 +208,9 @@ public class WorkoutCreationController {
                                     HttpSession session) {
         UserDto userDto = (UserDto) session.getAttribute("loggedUser");
         List<DayWorkout> weekDays = (List<DayWorkout>) session.getAttribute("weekDays");
+        if (weekDays == null) weekDays = new ArrayList<>();
         dto.setWeekDays(weekDays);
-        programService.createProgram(dto, userDto, userDto.getMeasuringUnits().equals("lb"));
-        sessionModelService.clearSession(session);
+        programService.createProgram(dto, userDto, userDto.getMeasuringUnits());
         return "redirect:/home";
     }
 

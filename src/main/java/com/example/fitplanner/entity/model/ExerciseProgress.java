@@ -12,7 +12,7 @@ import java.time.LocalDate;
 
 @Entity
 @Getter
-@ToString
+@ToString(exclude = {"user", "workoutSession"})
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class ExerciseProgress extends BaseEntity {
 

@@ -39,6 +39,15 @@ html.dark .btn:active {
     border-color: #484e55;
 }
 
+html.dark .day:hover:not(.empty, .workout-day),
+html.dark .nav-btn:hover {
+    background-color: rgba(245, 245, 245, 0.14);
+}
+
+html.dark .day.today {
+    border: 5px solid #333333
+}
+
 /* ---------- Container ---------- */
 html.dark .container {
     color: #ffffff;

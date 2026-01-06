@@ -29,5 +29,7 @@ public class SessionModelService {
         session.removeAttribute("weekDays");
         session.removeAttribute("currentDay");
         session.removeAttribute("exercise");
+        session.removeAttribute("programForm");
+        session.removeAttribute("programId");
     }
 }

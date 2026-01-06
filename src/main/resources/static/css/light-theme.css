@@ -51,6 +51,15 @@ html.light .btn-theme:active {
     border-color: #b0b0b0;
 }
 
+html.light .day:hover:not(.empty, .workout-day),
+html.light .nav-btn:hover {
+    background-color: rgb(255, 255, 255);
+}
+
+html.light .day.today {
+    border: 5px solid #eeeeee
+}
+
 /* ---------- Container ---------- */
 html.light .container {
     color: #111;

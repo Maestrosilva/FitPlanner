@@ -10,10 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -56,27 +55,28 @@ public class ProgramService {
         return programDtos;
     }
 
-//    public Program getCurrentProgram() {
-//        return programRepository.findFirstByOrderByCreatedAtDesc().orElse(null);
-//    }
-
-    public Program getProgramById(Long id) {
-        return programRepository.findById(id).orElse(null);
+    public ProgramDto getProgramById(Long id) {
+        Program program = programRepository.findById(id).orElse(null);
+        return modelMapper.map(program, ProgramDto.class);
     }
 
-    public Program saveProgram(Program program) {
-        return programRepository.save(program);
+    public CreatedProgramDto getCreatedProgramById(Long id) {
+        Program program = programRepository.findById(id).orElse(null);
+        System.out.println(program);
+        System.out.println(modelMapper.map(program, CreatedProgramDto.class));
+        return modelMapper.map(program, CreatedProgramDto.class);
+
     }
 
-    public void deleteProgram(Long id) {
-        programRepository.deleteById(id);
+    public void saveProgram(ProgramDto program) {
+        programRepository.save(modelMapper.map(program, Program.class));
     }
 
-    public void createProgram(CreatedProgramDto dto, UserDto userDto, boolean isInLbUnits) {
+    public void createProgram(CreatedProgramDto dto, UserDto userDto, String units) {
         User user = userRepository.findById(userDto.getId())
                 .orElseThrow(() -> new IllegalArgumentException(
                         "User not found with id: " + userDto.getId()));
-        Program program = new Program(dto.getName(), user);
+        Program program = new Program(dto.getName(), user, dto.getScheduleMonths(), dto.getNotifications(), dto.getIsPublic());
         program = programRepository.save(program);
         LocalDate today = LocalDate.now();
         int totalWeeks;
@@ -109,7 +109,7 @@ public class ProgramService {
                             user,
                             epDto.getReps(),
                             epDto.getSets(),
-                            isInLbUnits ? epDto.getWeight() * LB_TO_KG : epDto.getWeight(),
+                            units.equals("lb") ? epDto.getWeight() * LB_TO_KG : epDto.getWeight(),
                             sessionDate
                     );
                     session.addExercise(progress);
@@ -118,4 +118,77 @@ public class ProgramService {
             }
         }
     }
+
+    @Transactional
+    public void updateProgram(Long programId, CreatedProgramDto dto, String units) {
+        Program program = programRepository.findById(programId)
+                .orElseThrow(() -> new IllegalArgumentException("Program not found: " + programId));
+
+        // 1. Update Metadata
+        program.setName(dto.getName());
+        program.setScheduleMonths(dto.getScheduleMonths());
+        program.setNotifications(dto.getNotifications());
+        program.setIsPublic(dto.getIsPublic());
+        programRepository.save(program);
+
+        LocalDate today = LocalDate.now();
+
+        // 2. Clear Future Sessions
+        List<WorkoutSession> futureSessions = workoutSessionRepository.findAllByProgramAndSessionDateAfter(program, today.minusDays(1));
+        workoutSessionRepository.deleteAll(futureSessions);
+
+        // IMPORTANT: Flush ensures the delete is finished before we try to insert
+        workoutSessionRepository.flush();
+
+        // 3. Validate the DTO Data
+        if (dto.getWeekDays() == null || dto.getWeekDays().isEmpty()) {
+            // If this logs, your Session/Controller isn't passing the exercises correctly
+            System.out.println("DEBUG: No weekdays found in DTO!");
+            return;
+        }
+
+        int totalWeeks = (!dto.getRepeats() || dto.getScheduleMonths() == 0) ? 1 : dto.getScheduleMonths() * 4;
+
+        // 4. Re-generation
+        for (int weekOffset = 0; weekOffset < totalWeeks; weekOffset++) {
+            // We calculate the start of the "target" week
+            LocalDate referenceDate = today.plusWeeks(weekOffset);
+
+            for (DayWorkout dayWorkout : dto.getWeekDays()) {
+                if (dayWorkout.getExercises() == null || dayWorkout.getExercises().isEmpty()) continue;
+
+                DayOfWeek dayOfWeek = DayOfWeek.valueOf(dayWorkout.getDay().toUpperCase());
+                LocalDate sessionDate = referenceDate.with(TemporalAdjusters.nextOrSame(dayOfWeek));
+
+                // Avoid double-scheduling the same day in week 0
+                if (sessionDate.isBefore(today)) continue;
+
+                WorkoutSession session = new WorkoutSession(program, sessionDate);
+                WorkoutSession savedSession = workoutSessionRepository.save(session);
+
+                for (ExerciseProgressDto epDto : dayWorkout.getExercises()) {
+                    Exercise exercise = exerciseRepository.findById(epDto.getExerciseId())
+                            .orElseThrow(() -> new IllegalArgumentException("Exercise not found"));
+
+                    double weight = "lb".equals(units) ? epDto.getWeight() * 0.453592 : epDto.getWeight();
+
+                    // Create a clean NEW progress record
+                    ExerciseProgress progress = new ExerciseProgress(
+                            savedSession,
+                            exercise,
+                            program.getUser(),
+                            epDto.getReps(),
+                            epDto.getSets(),
+                            weight,
+                            sessionDate
+                    );
+                    exerciseProgressRepository.save(progress);
+                }
+            }
+        }
+    }
+    public void removeProgram(Long programId) {
+        programRepository.deleteById(programId);
+    }
+
 }

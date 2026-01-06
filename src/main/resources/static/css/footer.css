@@ -10,3 +10,9 @@ footer {
     margin-top: 3%;
     padding: 2%;
 }
+
+@media (max-width: 676px) {
+    footer {
+        padding: 4%
+    }
+}

@@ -28,11 +28,9 @@ public class ExerciseService {
     public Set<ExerciseDto> getAll(){
         Set<Exercise> exercises = exerciseRepository.getAll();
         Set<ExerciseDto> exerciseDtos = new LinkedHashSet<>();
-        System.out.println("service" + exercises.stream().map(Exercise::toString).collect(Collectors.joining(", ")));
         for (Exercise e : exercises) {
             exerciseDtos.add(modelMapper.map(e, ExerciseDto.class));
         }
-        System.out.println("service" + exerciseDtos.stream().map(ExerciseDto::toString).collect(Collectors.joining(", ")));
         return exerciseDtos;
     }
 

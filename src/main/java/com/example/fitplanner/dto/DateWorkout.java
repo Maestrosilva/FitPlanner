@@ -1,7 +1,7 @@
 package com.example.fitplanner.dto;
 
 import lombok.Data;
-import org.springframework.stereotype.Component;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -10,9 +10,12 @@ import java.util.List;
 
 //@Component
 @Data
+@NoArgsConstructor
 public class DateWorkout implements Serializable {
     private LocalDate date;
     private List<ExerciseProgressDto> exercises;
+
+    private String programName;
 
     public DateWorkout(LocalDate date, List<ExerciseProgressDto> exercises) {
         this.date = date;
