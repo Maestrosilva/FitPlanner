@@ -33,18 +33,29 @@ public class StatisticsController {
         // Store in session to avoid DB calls in the AJAX endpoint later
         session.setAttribute("userStatsCache", statsUser);
 
-        // Prepare Personal Weight Data (from the DTO)
-        List<String> personalLabels = statsUser.getWeightChanges().stream()
-                .map(w -> w.getDate().toString())
-                .toList();
+        // -----------------------------
+        // Prepare Weight Change Data
+        // -----------------------------
+        List<String> personalLabels = new ArrayList<>();
+        List<Double> personalData = new ArrayList<>();
 
-        List<Double> personalData = statsUser.getWeightChanges().stream()
-                .map(WeightEntryDto::getWeight)
-                .toList();
+        if (statsUser.getWeightChanges() != null) {
+            statsUser.getWeightChanges().stream()
+                    .sorted(Comparator.comparing(WeightEntryDto::getDate)) // oldest → newest
+                    .forEach(entry -> {
+                        personalLabels.add(entry.getDate().toString());
+                        personalData.add(entry.getWeight());
+                    });
+        }
 
+        // -----------------------------
         // Get all exercises for the grid/selection
+        // -----------------------------
         Set<ExerciseDto> exercises = exerciseService.getAll();
 
+        // -----------------------------
+        // Add attributes to the model
+        // -----------------------------
         model.addAttribute("exercises", exercises);
         model.addAttribute("personalLabels", personalLabels);
         model.addAttribute("personalData", personalData);

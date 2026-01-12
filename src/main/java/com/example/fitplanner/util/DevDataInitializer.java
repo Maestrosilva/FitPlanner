@@ -62,9 +62,22 @@ public class DevDataInitializer {
                     user.setLastName("User");
                     user.setGender(Gender.MALE);
                     user.setAge(25);
-                    user.setWeight(70.0);
+                    user.setWeight(70.0); // current weight
                     user.setExperience(Difficulty.BEGINNER);
 
+                    LocalDate today = LocalDate.now();
+
+                    // IMPORTANT: add all weights before saving the user
+                    user.setWeight(70.0, today);           // current weight
+                    user.setWeight(69.5, today.minusWeeks(1));
+                    user.setWeight(70.2, today.minusWeeks(2));
+                    user.setWeight(69.0, today.minusWeeks(3));
+                    user.setWeight(68.8, today.minusWeeks(4));
+                    user.setWeight(69.1, today.minusWeeks(5));
+                    user.setWeight(68.5, today.minusWeeks(6));
+                    user.setWeight(69.0, today.minusWeeks(7));
+                    user.setWeight(68.7, today.minusWeeks(8));
+                    System.out.println(user);
                     return userRepository.save(user);
                 });
     }

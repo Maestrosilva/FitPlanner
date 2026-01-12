@@ -8,7 +8,9 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -76,6 +78,7 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     private Set<ExerciseProgress> completedExercises = new HashSet<>();
 
+    @Column
     private String profileImageUrl;
 
     @Column(nullable = false)
@@ -86,6 +89,11 @@ public class User extends BaseEntity {
 
     @Column(nullable = false)
     private String measuringUnits = "kg";
+
+    @ElementCollection
+    @CollectionTable(name = "user_weight_entries", joinColumns = @JoinColumn(name = "user_id"))
+    @OrderColumn(name = "entry_order")
+    private List<WeightEntry> weightChanges = new ArrayList<>();
 
     //trainer only todo
     // private Set<User> trainees = new HashSet<>();
@@ -102,5 +110,17 @@ public class User extends BaseEntity {
         this.experience = experience;
         this.email = email;
         this.password = password;
+        weightChanges.add(new WeightEntry(weight, LocalDate.now()));
+    }
+
+    public void setWeight(Double weight){
+        this.weight = weight;
+        weightChanges.add(new WeightEntry(weight, LocalDate.now()));
+    }
+
+    //test purposes only
+    public void setWeight(Double weight, LocalDate date){
+        this.weight = weight;
+        weightChanges.add(new WeightEntry(weight, date));
     }
 }

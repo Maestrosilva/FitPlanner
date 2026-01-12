@@ -18,20 +18,16 @@ function getThemeVar(varName) {
 }
 
 function initCharts() {
-    const getThemeVar = (varName) => getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
     const textColor = getThemeVar('--text-main') || '#000';
     const gridColor = getThemeVar('--border-soft') || 'rgba(0,0,0,0.1)';
-    const accentColor = getThemeVar('--success-accent');
+    const accentColor = getThemeVar('--success-accent') || '#198754';
 
     const commonScales = {
         y: {
             grid: { color: gridColor },
-            ticks: {
-                color: textColor,
-                maxTicksLimit: 10,
-            },
+            ticks: { color: textColor, maxTicksLimit: 10 },
             title: { display: true, text: `Weight (${userUnit})`, color: textColor, font: { weight: 'bold' } },
-            beginAtZero: false // Keeps the focus on the actual weight range
+            beginAtZero: false
         },
         x: {
             grid: { color: gridColor },
@@ -40,20 +36,20 @@ function initCharts() {
         }
     };
 
+    // Exercise chart (dynamic, updates when exercises selected)
     const exCtx = document.getElementById('exerciseProgressChart').getContext('2d');
     exerciseProgressChart = new Chart(exCtx, {
         type: 'line',
         data: { labels: [], datasets: [] },
         options: {
             responsive: true,
-            maintainAspectRatio: false, // REQUIRED to respect the CSS height
+            maintainAspectRatio: false,
             scales: commonScales,
-            plugins: {
-                legend: { labels: { color: textColor } }
-            }
+            plugins: { legend: { labels: { color: textColor } } }
         }
     });
 
+    // Personal weight chart (historical)
     const pCtx = document.getElementById('personalProgressChart').getContext('2d');
     personalProgressChart = new Chart(pCtx, {
         type: 'line',
@@ -72,12 +68,11 @@ function initCharts() {
             responsive: true,
             maintainAspectRatio: false,
             scales: commonScales,
-            plugins: {
-                legend: { labels: { color: textColor } }
-            }
+            plugins: { legend: { labels: { color: textColor } } }
         }
     });
 }
+
 function toggleExercise(cardElement) {
     const parent = cardElement.closest('.exercise-item');
     const id = parent.dataset.id;
