@@ -1,18 +1,23 @@
 package com.example.fitplanner.service;
 
-import com.example.fitplanner.dto.ProfileUserDto;
+import com.example.fitplanner.dto.*;
+import com.example.fitplanner.entity.model.ExerciseProgress;
 import com.example.fitplanner.util.UnitValidator;
-import com.example.fitplanner.dto.UserLoginDto;
-import com.example.fitplanner.dto.UserRegisterDto;
 import com.example.fitplanner.entity.enums.Role;
 import com.example.fitplanner.entity.model.User;
 import com.example.fitplanner.repository.UserRepository;
 import com.example.fitplanner.util.SHA256Hasher;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Transactional
 @Service
@@ -21,6 +26,8 @@ public class UserService {
     final private ModelMapper modelMapper;
     final private UnitValidator unitValidator;
     final private SHA256Hasher hasher;
+
+    private final double KG_TO_LB = 2.20462262;
 
     @Autowired
     public UserService(UserRepository userRepository,
@@ -48,19 +55,21 @@ public class UserService {
     }
 
     public void validateUserLogin(UserLoginDto userLoginDto, BindingResult bindingResult){
+        String hashedPassword = hasher.hash(userLoginDto.getPassword());
         if(unitValidator.isValidEmail(userLoginDto.getUsernameOrEmail())
-                && userRepository.getByEmailAndPassword(userLoginDto.getUsernameOrEmail(), hasher.hash(userLoginDto.getPassword())).isEmpty()){
+                && userRepository.getByEmailAndPassword(userLoginDto.getUsernameOrEmail(), hashedPassword).isEmpty()){
             bindingResult.rejectValue("usernameOrEmail", "", "Email and Password do not match");
         }
         if(!unitValidator.isValidEmail(userLoginDto.getUsernameOrEmail())
-        && userRepository.getByUsernameAndPassword(userLoginDto.getUsernameOrEmail(), hasher.hash(userLoginDto.getPassword())).isEmpty()){
+        && userRepository.getByUsernameAndPassword(userLoginDto.getUsernameOrEmail(), hashedPassword).isEmpty()){
             bindingResult.rejectValue("usernameOrEmail", "", "Username and Password do not match");
         }
     }
 
     public void save(UserRegisterDto userRegisterDto) {
+        String hashedPassword = hasher.hash(userRegisterDto.getPassword());
         userRegisterDto.setRole(determineRole(userRegisterDto.getUsername()));
-        userRegisterDto.setPassword(hasher.hash(userRegisterDto.getPassword()));
+        userRegisterDto.setPassword(hashedPassword);
         User user = modelMapper.map(userRegisterDto, User.class);
         userRepository.save(user);
     }
@@ -77,12 +86,25 @@ public class UserService {
     }
 
     public <T> T getById(Long id, Class<T> dtoType) {
-        User user = getById(id);
-        System.out.println(user);
-        System.out.println(modelMapper.map(user, dtoType));
-        return modelMapper.map(user, dtoType);
+        return getById(id, dtoType, false);
     }
 
+    public <T> T getById(Long id, Class<T> dtoType, boolean convertToLbs) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        T toReturn = modelMapper.map(user, dtoType);
+
+        if (convertToLbs) {
+            if (toReturn instanceof ProfileUserDto profileUser) {
+                double rawLbs = profileUser.getWeight() * KG_TO_LB;
+                double roundedLbs = Math.round(rawLbs * 10.0) / 10.0;
+
+                profileUser.setWeight(roundedLbs);
+            }
+        }
+        return toReturn;
+    }
 
     public Long getIdByUsernameOrEmail(String usernameOrEmail) {
         User user = null;
@@ -93,19 +115,6 @@ public class UserService {
             user = userRepository.getByUsername(usernameOrEmail).orElseThrow(() -> new IllegalArgumentException("Username not found"));
         }
         return user.getId();
-    }
-
-//    public void updateUserSettings(UserDto userDto) {
-//        User user = userRepository.findById(userDto.getId())
-//                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-//        user.setTheme(userDto.getTheme());
-//        user.setLanguage(userDto.getLanguage());
-//        user.setMeasuringUnits(userDto.getMeasuringUnits());
-//    }
-
-    private User getById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid ID"));
     }
 
     public void updateProfile(ProfileUserDto profileDto) {
@@ -123,5 +132,23 @@ public class UserService {
         user.setLanguage(profileDto.getLanguage());
         user.setMeasuringUnits(profileDto.getMeasuringUnits());
         userRepository.save(user);
+    }
+
+    public List<WeightEntryDto> getWeightHistory(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        List<WeightEntryDto> history = new ArrayList<>();
+
+        // Initial weight (from User entity)
+        history.add(new WeightEntryDto(user.getCreatedAt(), user.getWeight()));
+
+        // If you later have a separate weight update history table, you can add it here:
+        // List<WeightUpdate> updates = weightUpdateRepository.findByUserId(userId);
+        // for (WeightUpdate update : updates) {
+        //     history.add(new WeightEntryDto(update.getDate(), update.getWeight()));
+        // }
+
+        return history;
     }
 }

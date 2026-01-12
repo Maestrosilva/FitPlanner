@@ -13,7 +13,7 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString(exclude = {"user"})
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Program extends BaseEntity {
 
 //    @Size(min = 2, max = 64)

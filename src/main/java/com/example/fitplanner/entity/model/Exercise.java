@@ -14,8 +14,9 @@ import lombok.*;
 
 @Entity
 @Getter
+@Setter
 @ToString
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Exercise extends BaseEntity {
     @NotBlank
     @Size(min = 3, max = 32)

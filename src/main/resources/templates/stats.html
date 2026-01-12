@@ -5,28 +5,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="#{exercise.all_categories}">Exercises</title>
+    <title>Statistics</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/dark-theme.css?t=1}">
-    <link rel="stylesheet" th:href="@{/css/light-theme.css?t=1}">
-    <link rel="stylesheet" th:href="@{/css/search-bar.css?t=1}">
+
     <link rel="stylesheet" th:href="@{/css/common.css?t=1}">
+    <link rel="stylesheet" th:href="@{/css/search-bar.css?t=1}">
+    <link rel="stylesheet" th:href="@{/css/scrollbar.css?t=1}">
     <link rel="stylesheet" th:href="@{/css/navbar.css?t=1}">
     <link rel="stylesheet" th:href="@{/css/footer.css?t=1}">
+    <link rel="stylesheet" th:href="@{/css/dark-theme.css?t=1}">
+    <link rel="stylesheet" th:href="@{/css/light-theme.css?t=1}">
 
-    <link rel="stylesheet" th:href="@{/css/scrollbar.css?t=1}">
-    <link rel="stylesheet" th:href="@{/css/exercise-log.css?t=1}">
+    <link rel="stylesheet" th:href="@{/css/stats.css?t=1}">
 </head>
 <body>
-<div th:replace="~{fragment/navbar.html::navbar}"></div>
-<div class="background-section py-4">
-    <div class="container log-container">
-        <form th:action="@{/close-log}" method="post" class="close-form">
-            <button type="submit" class="close-btn" th:title="#{exercise.close}">✕</button>
-        </form>
-        <!-- ================= SEARCH ================= -->
+<div th:replace="fragment/navbar.html::navbar"></div>
+<div class="background-section">
+    <div class="container my-5 p-2">
+        <h1 class="mb-4">Statistics</h1>
         <div th:replace="fragment/search-bar.html::search-bar('exerciseSearch', #{exercise.search_placeholder})"></div>
-        <!-- ================= FILTERS ================= -->
         <div class="row mb-4 mt-3">
             <div class="col-md-4 mb-2">
                 <select id="categoryFilter" class="form-select">
@@ -59,47 +57,69 @@
                 </select>
             </div>
         </div>
-        <!-- ================= EXERCISES GRID ================= -->
-        <div class="exercise-grid-container scrollable-container">
-            <div class="row g-4 justify-content-start">
+
+        <div class="exercise-grid-container scrollable-container mb-5">
+            <div class="row g-3 justify-content-start" id="exerciseRow">
                 <div th:each="ex : ${exercises}"
                      class="col-4 col-md-3 col-lg-2 exercise-item"
                      th:attr="
-                        data-name=${#strings.toLowerCase(ex.name)},
-                        data-category=${#strings.toLowerCase(ex.category)},
-                        data-difficulty=${#strings.toLowerCase(ex.difficulty)},
-                        data-equipment=${#strings.toLowerCase(ex.equipmentType)}
-                     ">
-                    <form th:action="@{/set-exercise}" method="get" class="exercise-card">
-                        <input type="hidden" name="exerciseId" th:value="${ex.id}">
-                        <button type="submit" class="card exercise-card p-0 w-100">
-                            <div class="exercise-image-container">
-                                <img th:src="${ex.imageUrl}" class="exercise-image" alt="">
-                                <div class="exercise-name-overlay text-size-12"
-                                     th:text="${ex.name}">
-                                </div>
-                            </div>
-                        </button>
-                    </form>
-                    <form th:action="@{/show/{id}(id=${ex.id})}" method="post" class="mt-1">
-                        <button type="submit" class="btn bg-success w-100" th:text="#{exercise.btn_show}">
-                            Show
-                        </button>
-                    </form>
+                    data-id=${ex.id},
+                    data-name=${ex.name},
+                    data-category=${#strings.toLowerCase(ex.category)},
+                    data-difficulty=${#strings.toLowerCase(ex.difficulty)},
+                    data-equipment=${#strings.toLowerCase(ex.equipmentType)}
+                 ">
+                    <div class="card exercise-selectable-card p-0 h-100" onclick="toggleExercise(this)">
+                        <div class="card-body p-0 d-flex flex-column justify-content-center align-items-center text-center">
+                            <div class="exercise-name-label" th:text="${ex.name}">Exercise Name</div>
+                        </div>
+                    </div>
                 </div>
-                <div id="noResults"
-                     class="col-12 text-center p-3"
-                     style="display: none;"
-                     th:text="#{exercise.no_results}">
+                <div id="noResults" class="col-12 text-center p-3" style="display: none;" th:text="#{exercise.no_results}">
                     No results
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 mb-5">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <span>Exercise Progress Comparison</span>
+                        <small id="selectedCounter" class="badge bg-light text-primary">0 selected</small>
+                    </div>
+                    <div class="card-body chart-container">
+                        <canvas id="exerciseProgressChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 mb-5">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white">Personal Progress (Weight)</div>
+                    <div class="card-body chart-container">
+                        <canvas id="personalProgressChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<footer th:replace="~{fragment/footer.html::footer}"></footer>
+
+<footer th:replace="fragment/footer.html::footer"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script th:src="@{/js/filters.js?t=1}"></script>
 <script th:src="@{/js/search-bar.js?t=1}"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="javascript">
+    /* These variables are initialized by Thymeleaf and made global for stats.js */
+    window.userStatsConfig = {
+        unit: /*[[${units != null ? units : 'kg'}]]*/ 'kg',
+        personalLabels: /*[[${personalLabels}]]*/ [],
+        personalData: /*[[${personalData}]]*/ []
+    };
+</script>
+<script th:src="@{/js/stats.js?t=1}"></script>
 </body>
 </html>

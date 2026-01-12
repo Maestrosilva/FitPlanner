@@ -1,25 +1,35 @@
 package com.example.fitplanner.service;
 
 import com.example.fitplanner.dto.ExerciseDto;
+import com.example.fitplanner.dto.ExerciseProgressDto;
+import com.example.fitplanner.dto.StatsExerciseDto;
 import com.example.fitplanner.entity.model.Exercise;
+import com.example.fitplanner.entity.model.ExerciseProgress;
+import com.example.fitplanner.repository.ExerciseProgressRepository;
 import com.example.fitplanner.repository.ExerciseRepository;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
 public class ExerciseService {
     private final ExerciseRepository exerciseRepository;
+    private final ExerciseProgressRepository exerciseProgressRepository;
     private final ModelMapper modelMapper;
+    private final double LB_TO_KG = 0.45359237;
+    private final double KG_TO_LB = 2.20462262;
 
     @Autowired
-    public ExerciseService(ExerciseRepository exerciseRepository, ModelMapper modelMapper) {
+    public ExerciseService(ExerciseRepository exerciseRepository,
+                           ExerciseProgressRepository exerciseProgressRepository
+            , ModelMapper modelMapper) {
         this.exerciseRepository = exerciseRepository;
+        this.exerciseProgressRepository = exerciseProgressRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -36,5 +46,32 @@ public class ExerciseService {
         Exercise exercise = exerciseRepository.getById(id);
         ExerciseDto exerciseDto = modelMapper.map(exercise, ExerciseDto.class);
         return exerciseDto;
+    }
+
+    public List<ExerciseProgressDto> getAllProgresses(Long userId) {
+        List<ExerciseProgress> exerciseProgresses = exerciseProgressRepository.findByUserId(userId);
+        List<ExerciseProgressDto> dtos = new ArrayList<>();
+        for (ExerciseProgress progress : exerciseProgresses) {
+            dtos.add(modelMapper.map(progress, ExerciseProgressDto.class));
+        }
+        return dtos;
+    }
+
+    public List<StatsExerciseDto> getConvertedStats(Long userId, String unitPreference) {
+        List<ExerciseProgress> entities = exerciseProgressRepository.findByUserId(userId);
+        boolean isLbs = "lbs".equalsIgnoreCase(unitPreference);
+
+        return entities.stream()
+                .map(entity -> {
+                    StatsExerciseDto dto = modelMapper.map(entity, StatsExerciseDto.class);
+                    if (isLbs && dto.getWeight() != null) {
+                        double convertedWeight = dto.getWeight() * KG_TO_LB;
+                        dto.setWeight(Math.round(convertedWeight * 100.0) / 100.0);
+                    }
+                    return dto;
+                })
+                .filter(dto -> dto.getCompletedDate() != null)
+                .sorted(Comparator.comparing(StatsExerciseDto::getCompletedDate))
+                .collect(Collectors.toList());
     }
 }

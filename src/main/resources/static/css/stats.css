@@ -1,0 +1,65 @@
+.exercise-selectable-card {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-card);
+    color: var(--text-main);
+    border-radius: 8px;
+}
+
+.background-section{
+}
+
+.exercise-selectable-card:hover {
+    transform: translateY(-3px);
+    background-color: var(--hover-light);
+}
+
+.selected-active {
+    border: 2px solid var(--success-accent) !important;
+    background-color: var(--hover-light) !important;
+    box-shadow: var(--shadow-card);
+}
+
+.exercise-grid-container {
+    max-height: 250px;
+    padding: 15px;
+    border-radius: 12px;
+    background-color: var(--bg-section);
+    border: 1px solid var(--border-soft);
+}
+
+.card.shadow-sm {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-card);
+    color: var(--text-main);
+}
+
+.chart-container {
+    position: relative;
+    height: 550px;
+    width: 100%;
+}
+
+.card.shadow-sm {
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        height: 350px;
+    }
+
+    .exercise-grid-container {
+        max-height: 130px;
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .exercise-item {
+        padding: 5px;
+    }
+}

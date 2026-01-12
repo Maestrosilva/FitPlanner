@@ -10,8 +10,9 @@ import java.util.Set;
 
 @Entity
 @Getter
+@Setter
 @ToString(exclude = {"program"})
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class WorkoutSession extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "program_id")

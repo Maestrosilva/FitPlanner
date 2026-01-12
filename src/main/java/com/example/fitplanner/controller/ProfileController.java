@@ -42,8 +42,7 @@ public class ProfileController {
     public String showProfile(Model model, HttpSession session) {
         UserDto userDto = (UserDto) session.getAttribute("loggedUser");
         if (userDto == null) return "redirect:/login";
-
-        ProfileUserDto profileData = userService.getById(userDto.getId(), ProfileUserDto.class);
+        ProfileUserDto profileData = userService.getById(userDto.getId(), ProfileUserDto.class, userDto.getMeasuringUnits().equals("lbs"));
         model.addAttribute("profileForm", profileData);
         return "/profile";
     }
@@ -58,8 +57,8 @@ public class ProfileController {
             HttpServletResponse response,
             RedirectAttributes redirectAttributes) {
 
-        UserDto loggedUser = (UserDto) session.getAttribute("loggedUser");
-        if (loggedUser == null) return "redirect:/login";
+        UserDto userDto = (UserDto) session.getAttribute("loggedUser");
+        if (userDto == null) return "redirect:/login";
 
         ProfileUserDto existing = userService.getById(profileDto.getId(), ProfileUserDto.class);
 

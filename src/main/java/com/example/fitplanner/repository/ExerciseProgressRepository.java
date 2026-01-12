@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -15,4 +16,7 @@ public interface ExerciseProgressRepository extends JpaRepository<ExerciseProgre
     @Query("SELECT exPr FROM ExerciseProgress exPr WHERE exPr.workoutSession.program.id = :programId AND exPr.lastScheduled = :day")
     List<ExerciseProgress> getByProgramIdAndDay(@Param("programId") Long programId,
                                                  @Param("day") LocalDate day);
+
+    @Query("SELECT exPr FROM ExerciseProgress  exPr WHERE exPr.user.id = :userId")
+    List<ExerciseProgress> findByUserId(@Param(value = "userId") Long userId);
 }

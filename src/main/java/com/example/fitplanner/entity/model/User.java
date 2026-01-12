@@ -15,7 +15,7 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString(exclude = {"programs", "completedExercises"})
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class User extends BaseEntity {
     @NotBlank
     @Size(min = 2, max = 24)

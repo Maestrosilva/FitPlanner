@@ -57,6 +57,10 @@
     margin: 0 auto 20px;
 }
 
+.avatar-wrapper:hover {
+    cursor: pointer;
+}
+
 .avatar-wrapper img {
     width: 100%;
     height: 100%;

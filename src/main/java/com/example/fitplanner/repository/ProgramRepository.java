@@ -15,6 +15,6 @@ public interface ProgramRepository extends JpaRepository<Program, Long> {
     @Query("SELECT p FROM Program p WHERE p.user.id = :userId")
     List<Program> getByUserId(@Param(value = "userId") Long userId);
 
-    @Query("")
-    Optional<Program> findFirstByOrderByCreatedAtDesc();
+//    @Query("")
+//    Optional<Program> findFirstByOrderByCreatedAtDesc();
 }

@@ -5,6 +5,7 @@ import com.example.fitplanner.entity.enums.Gender;
 import com.example.fitplanner.entity.enums.Role;
 
 import lombok.Data;
+import org.springframework.format.annotation.NumberFormat;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -33,6 +34,7 @@ public class ProfileUserDto implements Serializable {
 
     private Integer age;
 
+    @NumberFormat(pattern = "#.#")
     private Double weight;
 
     private Difficulty experience;
