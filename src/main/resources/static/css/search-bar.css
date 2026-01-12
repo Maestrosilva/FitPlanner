@@ -3,49 +3,61 @@
     --search-text: #000000;
 }
 
+/* 1. Ensure the parent container is a rigid flexbox */
 .search-bar .input-group {
     display: flex;
-    align-items: center;
-    height: 100%;
-}
-
-.search-bar .search-icon {
-    width: 22px;
-    height: 22px;
-    object-fit: contain;
-    fill: var(--search-bg);
-    color: black;
-}
-
-.search-bar .search-input {
-    width: 100%;
-    height: 35px;
-}
-
-.search-bar .search-container-inner,
-.search-bar .row,
-.search-bar .col-12 {
-    margin: 0 !important;
-    padding: 0 !important;
-    display: flex;
-    align-items: center;
-}
-
-.search-bar .input-group {
     flex-wrap: nowrap;
+    align-items: stretch; /* Forces children to be the same height */
+    height: 35px; /* Unified height */
+    border-radius: 4px;
+    overflow: hidden; /* Clips any sub-pixel overflow */
 }
 
+/* 2. Fix the Icon Container */
 .search-bar .input-group-text {
     background-color: var(--search-bg);
     border: 1px solid var(--search-bg);
     border-right: none;
+    padding: 0 8px 0 12px; /* Remove top/bottom padding to center vertically */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
+/* 3. Fix the Icon Image */
+.search-bar .search-icon {
+    width: 18px; /* Slightly smaller looks more balanced */
+    height: 18px;
+    display: block; /* CRITICAL: Removes the text-baseline gap at the bottom */
+    object-fit: contain;
+    /* Remove any default margin that might exist */
+    margin: 0;
+}
+
+/* 4. Fix the Input Field */
 .search-bar .form-control {
     background-color: var(--search-bg);
     border: 1px solid var(--search-bg);
     color: var(--search-text);
     border-left: none;
+    height: 100%; /* Match parent height */
+    padding-left: 4px; /* Move text closer to icon */
+    font-size: 14px;
+}
+
+/* 5. Remove the blue "glow" and border changes on focus */
+.search-bar .form-control:focus {
+    background-color: var(--search-bg);
+    border-color: var(--search-bg);
+    box-shadow: none;
+    color: var(--search-text);
+}
+
+/* 6. General container reset */
+.search-bar .search-container-inner {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block;
 }
 
 @media (max-width: 576px) {
