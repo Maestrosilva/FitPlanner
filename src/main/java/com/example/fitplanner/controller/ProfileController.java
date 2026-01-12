@@ -71,15 +71,8 @@ public class ProfileController {
 //                return "redirect:/profile";
 //            }
 
-            // --- Remove previous image if exists ---
-            if (existing.getProfileImageUrl() != null && !existing.getProfileImageUrl().isBlank()) {
-                Path oldImagePath = Paths.get("uploads/", Paths.get(existing.getProfileImageUrl()).getFileName().toString());
-                try {
-                    Files.deleteIfExists(oldImagePath);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            // --- Remove previous image ---
+            deleteOldImage(existing.getProfileImageUrl());
 
             // --- Upload new image ---
             String profileImageUrl = uploadImage(profileImage);
@@ -140,6 +133,26 @@ public class ProfileController {
             String units = settings.get("units");
             if (!units.matches("kg|lb")) units = "kg";
             session.setAttribute("units", units);
+        }
+    }
+
+    private void deleteOldImage(String imageUrl) {
+        if (imageUrl == null || imageUrl.isBlank() || imageUrl.contains("default")) {
+            return;
+        }
+
+        try {
+            Path path = Paths.get(imageUrl);
+            String fileName = path.getFileName().toString();
+            Path fileToDelete = Paths.get("uploads").resolve(fileName);
+            boolean deleted = Files.deleteIfExists(fileToDelete);
+            if (deleted) {
+                System.out.println("Successfully deleted: " + fileName);
+            } else {
+                System.out.println("File not found on disk, but entry was removed from DB: " + fileName);
+            }
+        } catch (IOException e) {
+            System.err.println("Could not delete file (might be in use): " + e.getMessage());
         }
     }
 }
